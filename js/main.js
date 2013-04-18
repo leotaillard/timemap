@@ -1,10 +1,14 @@
 /*
 Auteur: Léo Taillard
 */
-map = L.map('map').setView([46.523335, 6.615654], 15);
+map = null;
 
 $(document).ready(function() {
+	
 	setHeight();
+	
+	map = L.map('map').setView([46.523335, 6.615654], 15);
+
 // Crée la map en définissant les coordonnées géographiques et le niveau de zoom
 	$("span").click(clickOnMe);
 // Ajoute un calque pour les tuiles (tile) Openstreetmap. Sans ça, vous n'aurez rien affiché. C'est le Web Map Service de votre carte, ici celui par défaut.
