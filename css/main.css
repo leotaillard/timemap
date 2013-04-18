@@ -34,10 +34,16 @@ img,video{
 	width: 100%;
 	height: 240px;
 	padding-bottom: 20px;
-	overflow-x: auto;
-	overflow-y: hidden;
+	overflow: hidden;
 	z-index: 1;
 }
+/*.kinetic-moving-right{
+	border-top: 5px solid #333;
+}
+.kinetic-moving-left{
+	border-top: 5px solid #333;
+}*/
+
 #timeline{
 	position: relative;
 	width: 200%;
