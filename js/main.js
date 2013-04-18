@@ -5,6 +5,7 @@ map = null;
 
 $(document).ready(function() {
 	
+    $('#scroll').kinetic();
 	setHeight();
 	
 	map = L.map('map').setView([46.523335, 6.615654], 15);
@@ -25,6 +26,8 @@ $(document).ready(function() {
 	L.marker([46.522433, 6.614744]).addTo(map)
 	    .bindPopup('<h2>COOLER 2</h2>'); // La légende
 	
+	
+	
 });
 
 window.onresize = function() {
@@ -34,10 +37,13 @@ window.onresize = function() {
 function clickOnMe(e){
 	switch ($(this).first().attr("id")) {
 	case "media-1":
-		map.setView([43, 3], 15);
+		map.setView([46.523335, 6.615654], 17);
 		break;
 	case "media-2":
-		map.setView([46.523335, 6.615654], 15);
+		map.setView([46.524433, 6.616744], 17);
+		break;
+	case "media-3":
+		map.setView([46.522433, 6.614744], 17);
 		break;
 	}
 }

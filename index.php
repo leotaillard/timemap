@@ -28,20 +28,21 @@
 		<div id="map">
 		</div>
 		
-		
+		<div id="scroll">
 	    <div id="timeline">
 			<?php
 				for ($i = 0; $i < 8; $i++) {
-				$alea = rand(0, 78);
-				$alea2= rand(0, 78);
+				$alea = rand(0, 100);
+				$alea2= rand(0, 100);
+				$alea3= rand(0, 100);
 			?>
 			
 			<section class="personne">
 				<div class="perso">Nom de la personne</div>
 				<div class="line">
-					
 					<span class="circle" id="media-1" style="margin-left: <?php echo($alea) ?>%;"></span>
 					<span class="circle" id="media-2" style="margin-left: <?php echo($alea2) ?>%;"></span>
+					<span class="circle" id="media-3" style="margin-left: <?php echo($alea3) ?>%;"></span>
 				</div>
 				
 			</section>
@@ -49,10 +50,11 @@
 				}
 			?>
 	    </div>
+	    </div>
 		
 		
 		
-		
+	<script src='js/jquery.kinetic.min.js'></script>
 	<script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
     <script src="js/main.js" type="text/javascript"></script>
 	
