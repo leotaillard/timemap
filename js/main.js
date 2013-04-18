@@ -1,11 +1,11 @@
 /*
 Auteur: Léo Taillard
 */
+map = L.map('map').setView([46.523335, 6.615654], 15);
+
 $(document).ready(function() {
 	setHeight();
 // Crée la map en définissant les coordonnées géographiques et le niveau de zoom
-	var map = L.map('map').setView([46.523335, 6.615654], 15);
-	console.log(map);
 	$("span").click(clickOnMe);
 // Ajoute un calque pour les tuiles (tile) Openstreetmap. Sans ça, vous n'aurez rien affiché. C'est le Web Map Service de votre carte, ici celui par défaut.
 	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -30,10 +30,10 @@ window.onresize = function() {
 function clickOnMe(e){
 	switch ($(this).first().attr("id")) {
 	case "media-1":
-	console.log();
-	break;
+		map.setView([43, 3], 15);
+		break;
 	case "media-2":
-		alert("media-2");
+		map.setView([46.523335, 6.615654], 15);
 		break;
 	}
 }
