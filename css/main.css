@@ -40,6 +40,13 @@ img,video{
 	width: 100%;
 	border-bottom: 1px solid #FA6900;
 	height: 30px;
+	padding: 5px;
+}
+span.circle{
+	background: red;
+	width: 20px;
+	height: 20px;
+	display: inline-block;
 }
 /* #Media Queries
 ================================================== */

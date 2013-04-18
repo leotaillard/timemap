@@ -34,7 +34,7 @@
 			?>
 			
 			<section class="personne">
-				
+				<span class="circle"></span>
 			</section>
 			<?php
 				}
