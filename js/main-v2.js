@@ -6,16 +6,12 @@ serverUrl = "http://localhost:8888/timemap";
 array = [];
 markerTemplate = null;
 
-templateYoutube = "<div class='popup'><div class='media'><div class='video-container'><iframe src='http://www.youtube.com/embed/dFVxGRekRSg' frameborder='0' width='560' height='315'></iframe></div></div><div class='infos'><h2>Titre du média</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Donec ullamcorper nulla non metus auctor fringilla.</p></div></div>";
-
-
 $(document).ready(function() {
 	
     $('#scroll').kinetic();
 	setHeight();
 	
 	map = L.map('map').setView([46.79, 6.65], 12);
-
 // Crée la map en définissant les coordonnées géographiques et le niveau de zoom
 	$("#controls span").click(clickOnMe);
 // Ajoute un calque pour les tuiles (tile) Openstreetmap. Sans ça, vous n'aurez rien affiché. C'est le Web Map Service de votre carte, ici celui par défaut.
@@ -24,56 +20,9 @@ $(document).ready(function() {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 	}).addTo(map);
 
-	var markerTemplate = $("#markerTemplate").html();
-	$("#markerTemplate").remove();
-
-
-// Ajoute un marqueur ainsi qu'une légende contenue dans une infobulle personnalisable.
-$.getJSON(serverUrl+"/json/personne.json",
-	function(data) {
-			$(data.personne).each(function(index, e) {
-			
-				var info = {
-					"name": e.prenom
-				}
-				var icon = switchPerson(info);
-					
-				$(e.medias).each(function(index,e) {
-				
-					if(e.type == "youtube"){
-					
-						var youtubeUrl = "http://www.youtube.com/embed/"+e.url;
-						
-						var output = "<div class='popup'><div class='media'><div class='video-container'><iframe src='"+youtubeUrl+"' frameborder='0' width='560' height='315'></iframe></div></div><div class='infos'><h2>"+e.titre+"</h2><p>"+e.description+"</p></div><div class='clear'></div></div>";
-						var options = {
-							'minWidth':500
-						}
-					} else if (e.type == "photo") {
-					
-						var output = "<div class='popup'><div class='media'><div class='img-container'><img src='"+e.url+"' alt='"+e.titre+"' /></div></div><div class='infos'><h2>"+e.titre+"</h2><p>"+e.description+"</p></div><div class='clear'></div></div>";
-						var options = {
-							'minWidth':500
-						}
-					}
-					if (e.type =="texte") {
-						
-						var output = "<div class='popup'><div class='text'><h2>"+e.titre+"</h2><p>"+e.description+"</p></div></div>";
-						var options = {
-							'minWidth':500
-						}
-					}
-				
-					var marker = L.marker([e.lat, e.long], {icon: icon}).addTo(map)
-					    .bindPopup(output,options); // La légende
-					    array.push(marker);
-					
-				});
-			});
-			
-		}
-		
-	);
-	
+	markerTemplate = $("#markerTemplate").html();
+	console.log(markerTemplate);
+	addRealPeopleSample();
 	
 	var templateTimeline = $("#timeline").html();
 	$("#timeline").empty();
@@ -82,20 +31,12 @@ $.getJSON(serverUrl+"/json/personne.json",
 				$(data.personne).each(function(index, e) {
 					$("#timeline").append(Mustache.render(templateTimeline, data.personne[index]));
 					
-					var nameClasse = e.prenom.toLowerCase();
-					$('.personne:eq('+index+')').addClass(nameClasse);
 				});
 		$("#timeline").removeClass('hidden');
 		$("span.circle").click(function() {
-			
 			var lat = $(this).attr("lat");
-			var long = $(this).attr("long")
-			console.log(lat);
-			
-			lat = parseFloat(lat) + parseFloat(0.005);
-			console.log(lat);
+			var long = $(this).attr("long");
 			map.setView([lat, long], 13);
-			
 			var id = $(this).first().attr("id");
 			var toRemove = 'media-';
 			var index = id.replace(toRemove,'');
@@ -107,6 +48,8 @@ $.getJSON(serverUrl+"/json/personne.json",
 		
 		);
 		
+		
+
 });
 
 window.onresize = function() {
@@ -137,18 +80,64 @@ function setHeight(){
 	var diff = heightWindow - heightTL;
 	$("#map").css('height', diff);
 }
-function switchPerson(info){
+function newMarker(info){
+	/* console.log(content) */
+	//randomLat = (Math.random() * 0.037336) + 6.619655;
+	//randomLong = (Math.random() * 0.027156) + 46.766006;
+	//var marker = L.marker([randomLong, randomLat]);
+
+	var date = info.media.date;
 	
-	var LeafIcon = L.Icon.extend({
+	var icon = switchPerson(info);
+	var mediaUrl = switchType(info.media);
+
+	var marker = L.marker([info.media.lat, info.media.long], {icon: icon});
+	
+	var jsonTemplate = {
+		"title": info.media.titre,
+		"description": info.media.description,
+		"mediaUrl": mediaUrl
+	}
+	
+	var output = Mustache.render(markerTemplate, jsonTemplate);
+
+	var options = {
+		'minWidth':800
+	}
+	marker.bindPopup(output, options);
+	marker.addTo(map);
+	array.push(marker);
+}
+
+function addRealPeopleSample(){
+	$.getJSON('json/personne.json', function(data) {
+		 $.each(data.personne, function(key, person) {
+		 	var name = {
+			 	"firstName": person.prenom,
+			 	"lastName": person.nom
+		 	}
+		 	$.each(person.medias, function(key, media) {
+		 	var info = {
+			 	"name": name,
+			 	"media": media
+		 	}
+		 		newMarker(info);
+		 	});
+		});
+	});
+}
+
+function switchPerson(info){
+		var LeafIcon = L.Icon.extend({
     options: {
         iconSize:[45, 46],
         popupAnchor:  [0, -25]
-	    }
+    }
     });
     
     var iconPath = "css/img/icones/";
     
-    switch (info.name){
+    switch (info.name.firstName){
     case "Philip":
     	var icon = new LeafIcon({iconUrl: iconPath+'olivier.png'});
     break;
@@ -170,4 +159,46 @@ function switchPerson(info){
     }
 	
 	return icon;
+}
+
+function switchType(media){
+	var htmlReturn;
+	switch (media.type) {
+	    case "youtube":
+	    	htmlReturn = $("<iframe/>");
+	    	htmlReturn.attr({
+		    	width: 420,
+		    	height: 315,
+		    	src: "http://www.youtube.com/embed/"+ media.url,
+		    	frameborder: 0,
+		    	allowfullscreen: " "});
+			break;
+		case "photo":
+			htmlReturn = $("<img/>");
+	    	htmlReturn.attr({
+		    	width: 420,
+		    	height: 315,
+		    	src: media.url
+		    	});
+			break;
+		case "texte":
+			htmlReturn = $("<p/>");
+	    	htmlReturn.attr({
+		    	width: 420,
+		    	height: 315
+		    	});
+		    	htmlReturn.html(media.description);
+			break;
+		default:
+			htmlReturn = $("<iframe/>");
+	    	htmlReturn.attr({
+		    	width: 420,
+		    	height: 315,
+		    	src: "http://www.youtube.com/embed/"+ media.url,
+		    	frameborder: 0,
+		    	allowfullscreen: " "});
+		break;
+	}
+	htmlReturn = ($('<div>').append(htmlReturn.clone()).remove().html());
+	return htmlReturn;
 }

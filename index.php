@@ -24,39 +24,53 @@
 	<![endif]-->
     </head>
     <body>
+    	<div id="logo">
+    		<img src="img/logo.png" alt="Les voisins d'à côté" />
+    	</div>
     
 		<div id="map">
 		</div>
+		<nav id="controls">
+		                <span id="left">&lt; Gauche</span> |
+		                <span id="right">Droite &gt;</span>
+		                &nbsp;&nbsp; -- &nbsp;&nbsp;
+		                <span id="end">STAHP</span>
+		</nav>
 		
 		<div id="scroll">
-	    <div id="timeline">
-			<?php
-				for ($i = 0; $i < 8; $i++) {
-				$alea = rand(0, 100);
-				$alea2= rand(0, 100);
-				$alea3= rand(0, 100);
-			?>
-			
-			<section class="personne">
-				<div class="perso">Nom de la personne</div>
+		
+	    <div id="timeline" class="hidden">
+			<section class="personne {{prenom}}">
+				<div class="perso">{{prenom}}</div>
 				<div class="line">
-					<span class="circle" id="media-1" style="margin-left: <?php echo($alea) ?>%;"></span>
-					<span class="circle" id="media-2" style="margin-left: <?php echo($alea2) ?>%;"></span>
-					<span class="circle" id="media-3" style="margin-left: <?php echo($alea3) ?>%;"></span>
+					{{#medias}}
+						<span lat="{{lat}}" long="{{long}}" class="circle" id="media-{{idm}}" style='margin-left: {{{temporalite}}}%;'><span class="tooltip">{{titre}}</span></span>
+					{{/medias}}
 				</div>
 				
 			</section>
-			<?php
-				}
-			?>
 	    </div>
 	    </div>
 		
 		
-		
+	<script src='js/mustache.js'></script>
 	<script src='js/jquery.kinetic.min.js'></script>
 	<script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
     <script src="js/main.js" type="text/javascript"></script>
+	<div id="markerTemplate" class="hidden">
+	    <div class="popup">
+	        <div class="media">{{{mediaUrl}}}</div>
+	        <div class="info">
+	            <div class="titrePopup">
+	                {{title}}
+	            </div>
+	            <div class="descriptionPopup">
+		            {{description}}
+	            </div>
+	            
+	        </div>
+	    </div>
+	</div>
 	
     </body>
 </html>          
